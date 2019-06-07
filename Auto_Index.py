@@ -16,7 +16,7 @@ copy_location = ''
 indexed_location = ''
 dms_location = ''
 
-FILENAME_INDEX = 9 #usually 12, changed for Nebi
+FILENAME_INDEX = 12 #usually 12, changed for Nebi
 
 class Drawing:
  
@@ -142,7 +142,7 @@ def rename3():
                 print(my_dict[filename.lower()[:-4]])
                 os.rename(os.path.join(filepath, filename), os.path.join(indexed_location, my_dict[filename.lower()[:-4]] + ' ' + filename))
             except KeyError:
-                print('Not found ' + filename.lower()[:-4])
+                print('Not found ' + filename.lower()[:-4] + '. Check that an index number is allocated to this drawing in the DMS')
             except FileExistsError:
                     os.rename(os.path.join(filepath, filename), os.path.join(filepath, 'Already renamed-' + filename))
         renamed_files.append(filename)
@@ -190,8 +190,9 @@ class prompt(Cmd):
         rename3()
         
     def do_add1A(self, args):
-        '''function doesn't work well in its current state'''
-        filepath = r'''copied-1a'''
+        '''function doesn't work well in its current state. Currently is just adds 1A to the end of everything in the copy location. I did this to add a string at the end of files so that I can run addRev on file with a filename ending with just 2 dashes'''
+        #filepath = r'''copied-1a'''
+        filepath = copy_location
         renamed_files = []
         for filename in os.listdir(filepath):
             if filename.lower()[-3:] != 'pdf': #skip files that aren't PDFs
