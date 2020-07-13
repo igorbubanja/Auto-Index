@@ -127,6 +127,31 @@ def addRev():
                 except FileExistsError:
                     os.rename(os.path.join(filepath, filename), os.path.join(filepath, 'Already renamed-' + filename))
     print('done')
+    
+def rename_redeye():
+    #Function to rename pdfs that still include the redeye name ('CHILD-0.LastUploaded...).
+    #For the script to work, this section of the filename should be replaced with '_0' 
+    filepath = copy_location
+    for filename in os.listdir(filepath):
+        if 'CHILD' in filename:
+            #Finding the section of the filename to be replaced. 'find' method find the first index of a substring.
+            # 'rfind' find the index of the lsat occurance of a substring
+            first_index = filename.find('-CHILD') #find first index of the redeye section
+            last_index = filename.rfind('-') #finds the index of the last dash. this dash is just before the revision, and we want to keep the revision
+            print(first_index)
+            print(last_index)
+            string_to_replace = filename[first_index : last_index]
+            print(string_to_replace)
+            
+            new_filename = filename.replace(string_to_replace, '_0')
+            
+            try:
+                os.rename(os.path.join(filepath, filename), os.path.join(filepath, new_filename))
+            except FileNotFoundError:
+                print('File not found')
+            except FileExistsError:
+                os.rename(os.path.join(filepath, filename), os.path.join(filepath, 'Already renamed-' + filename))
+    
 
 def rename3():
     drw_list = drawing_list()
@@ -257,6 +282,9 @@ class prompt(Cmd):
                     print(space_index)
             os.rename(os.path.join(filepath, filename), os.path.join(filepath, filename[space_index+1:]))
         print('complete')
+        
+    def do_rename_redeye(self, args):
+        rename_redeye()        
 
         
 '''Functions for GUI'''
