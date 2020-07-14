@@ -280,7 +280,8 @@ class prompt(Cmd):
                 if filename[i] is ' ':
                     space_index = i
                     print(space_index)
-            os.rename(os.path.join(filepath, filename), os.path.join(filepath, filename[space_index+1:]))
+            if space_index != 0:
+                os.rename(os.path.join(filepath, filename), os.path.join(filepath, filename[space_index+1:]))
         print('complete')
         
     def do_rename_redeye(self, args):
