@@ -172,6 +172,19 @@ def rename3():
                     os.rename(os.path.join(filepath, filename), os.path.join(filepath, 'Already renamed-' + filename))
         renamed_files.append(filename)
     print('complete')
+    
+def undo():
+    global indexedlocation
+    filepath = indexed_location
+    for filename in os.listdir(filepath):
+        space_index = 0
+        for i in range(len(filename)):
+            if filename[i] is ' ':
+                space_index = i
+                print(space_index)
+        if space_index != 0:
+            os.rename(os.path.join(filepath, filename), os.path.join(filepath, filename[space_index+1:]))
+    print('complete')
         
 def setcopylocation():
         global copy_location
@@ -272,17 +285,7 @@ class prompt(Cmd):
         b = int(s)
         
     def do_undo(self, args):
-        global indexedlocation
-        filepath = indexed_location
-        for filename in os.listdir(filepath):
-            space_index = 0
-            for i in range(len(filename)):
-                if filename[i] is ' ':
-                    space_index = i
-                    print(space_index)
-            if space_index != 0:
-                os.rename(os.path.join(filepath, filename), os.path.join(filepath, filename[space_index+1:]))
-        print('complete')
+        undo()
         
     def do_rename_redeye(self, args):
         rename_redeye()        
@@ -317,12 +320,18 @@ class MainWindow(tk.Frame):
                                 command=self.set_paths)
         self.button2 = tk.Button(self, text = 'Execute',
                                 command = self.execute)
+        self.button3 = tk.Button(self, text = 'Undo',
+                                command = self.undo)
         self.button1.pack(side='top')
         self.button2.pack(side ='top')
+        self.button3.pack(side = 'top')
         
         
     def execute(self):
         rename3()
+        
+    def undo(self):
+        undo()
         
     def set_paths(self):
         global dms_location
@@ -347,6 +356,8 @@ class MainWindow(tk.Frame):
         copy_button.grid(row = 1, column = 0, sticky = 'ew')
         self.index_label.grid(row = 2, column = 1, sticky = 'ew')
         index_button.grid(row = 2, column = 0, sticky = 'ew')
+
+        
         
     def set_dms_button(self):
         global dms_location
@@ -375,10 +386,10 @@ if __name__ == '__main__':
         my_prompt = prompt()
         my_prompt.prompt = '>'
         my_prompt.cmdloop('--------Script to rename the PDFs in the folder---\n'\
-                          '-------Type "help" for a list of commands-----------\n'\
-                          '---------------Written by Igor--------------------\n')
+                          '-------Type "help" for a list of commands-----------\n')
     elif (mode == 'gui'):
         root = tk.Tk()
+        root.geometry("500x500")
         main = MainWindow(root)
         main.pack(side="top", fill="both", expand=True)
         root.mainloop()
